@@ -16,14 +16,22 @@ class _NewItemState extends State<NewItem> {
           'Add a new Item',
         ),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(
-          12,
+      body: Padding(
+        padding: const EdgeInsets.all(12,),
+        child: Form(
+          child: Column(
+            children: [
+              TextFormField(
+                maxLength: 50,
+                decoration: const InputDecoration(
+                  label: Text('Name',
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
-        child: Text(
-          'The form',
-        ),
-      ),
+      )
     );
   }
 }
