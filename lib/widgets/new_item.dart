@@ -28,7 +28,13 @@ class _NewItemState extends State<NewItem> {
                   label: Text('Name'),
                 ),
                 validator: (value) {
-                  return 'Demo...';
+                  if (value == null ||
+                      value.isEmpty ||
+                      int.tryParse(value) == null ||
+                      int.tryParse(value)! < 50) {
+                    return 'Must be valid and positive number';
+                  }
+                  return null;
                 },
               ),
               Row(
