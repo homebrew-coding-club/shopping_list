@@ -74,8 +74,8 @@ class _NewItemState extends State<NewItem> {
                         if (value == null ||
                             value.isEmpty ||
                             int.tryParse(value) == null ||
-                            int.tryParse(value)! < 50) {
-                          return 'Must be valid and positive number';
+                            int.tryParse(value)! <= 0) {
+                          return 'Must be a valid, positive number.';
                         }
                         return null;
                       },
