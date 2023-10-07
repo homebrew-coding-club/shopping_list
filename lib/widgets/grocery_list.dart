@@ -20,10 +20,10 @@ class _GroceryListState extends State<GroceryList> {
   @override
   void initState() {
     super.initState();
-    _loadItem();
+    _loadItems();
   }
 
-  void _loadItem() async {
+  void _loadItems() async {
     final url = Uri.https(
         'fluter-prep-3c6a7-default-rtdb.firebaseio.com', 'shopping-list.json');
     final response = await http.get(url);
@@ -32,12 +32,12 @@ class _GroceryListState extends State<GroceryList> {
     for (final item in listData.entries) {
       final category = categories.entries.firstWhere((catItem) => catItem.value.title == item.value['category']).value;
       loadedItems.add(
-          GroceryItem(
-            id: item.key,
-            name: item.value['name'],
-            quantity: item.value['quantity'],
-            category: category,
-          )
+        GroceryItem(
+          id: item.key,
+          name: item.value['name'],
+          quantity: item.value['quantity'],
+          category: category,
+        ),
       );
     }
     setState(() {
@@ -45,20 +45,14 @@ class _GroceryListState extends State<GroceryList> {
     });
   }
 
-
   void _addItem() async {
-    final newItem = await Navigator.of(context).push<GroceryItem>(
+    await Navigator.of(context).push<GroceryItem>(
       MaterialPageRoute(
         builder: (context) => const NewItem(),
       ),
     );
 
-    if (newItem == null) {
-      return;
-    }
-    setState(() {
-      _groceryItems.add(newItem);
-    });
+    _loadItems();
   }
 
   void _removeItem(GroceryItem item) {
