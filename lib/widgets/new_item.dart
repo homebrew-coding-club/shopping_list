@@ -24,24 +24,29 @@ class _NewItemState extends State<NewItem> {
   Future<void> _saveItem() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      final url = Uri.https('fluter-prep-3c6a7-default-rtdb.firebaseio.com', 'shopping-list.json');
-      final response = await http.post(url, headers: {
-        'Content-Type': 'application/json',
-      }, body: json.encode({
-        'name': _enteredName,
-        'quantity': _enteredQuantity,
-        'category': _selectedCategory.title,
-      }));
+      final url = Uri.https('fluter-prep-3c6a7-default-rtdb.firebaseio.com',
+          'shopping-list.json');
+      final response = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: json.encode({
+            'name': _enteredName,
+            'quantity': _enteredQuantity,
+            'category': _selectedCategory.title,
+          }));
 
-      print(response.statusCode);
-      print(response.body);
+      final Map<String, dynamic> resData = json.decode(response.body);
 
-      if(!context.mounted) {
-        print('mount');
+      if (!context.mounted) {
         return;
       }
 
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(GroceryItem(
+          id: resData['name'],
+          name: _enteredName,
+          quantity: _enteredQuantity,
+          category: _selectedCategory));
     }
   }
 
