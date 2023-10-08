@@ -16,6 +16,8 @@ class GroceryList extends StatefulWidget {
 
 class _GroceryListState extends State<GroceryList> {
   List<GroceryItem> _groceryItems = [];
+  var _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -27,10 +29,18 @@ class _GroceryListState extends State<GroceryList> {
     final url = Uri.https(
         'fluter-prep-3c6a7-default-rtdb.firebaseio.com', 'shopping-list.json');
     final response = await http.get(url);
+    if(response.statusCode >= 400) {
+      setState(() {
+        _error = 'Failed to fetch data, please try again later';
+      });
+    }
     final Map<String, dynamic> listData = json.decode(response.body);
     final List<GroceryItem> loadedItems = [];
     for (final item in listData.entries) {
-      final category = categories.entries.firstWhere((catItem) => catItem.value.title == item.value['category']).value;
+      final category = categories.entries
+          .firstWhere(
+              (catItem) => catItem.value.title == item.value['category'])
+          .value;
       loadedItems.add(
         GroceryItem(
           id: item.key,
@@ -42,6 +52,7 @@ class _GroceryListState extends State<GroceryList> {
     }
     setState(() {
       _groceryItems = loadedItems;
+      _isLoading = false;
     });
   }
 
@@ -52,7 +63,7 @@ class _GroceryListState extends State<GroceryList> {
       ),
     );
 
-    if(newItem == null) {
+    if (newItem == null) {
       return;
     }
 
@@ -76,6 +87,12 @@ class _GroceryListState extends State<GroceryList> {
       ),
     );
 
+    if (_isLoading) {
+      content = const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     if (_groceryItems.isNotEmpty) {
       content = ListView.builder(
         itemCount: _groceryItems.length,
@@ -96,6 +113,12 @@ class _GroceryListState extends State<GroceryList> {
             ),
           ),
         ),
+      );
+    }
+
+    if(_error != null) {
+      content = Center(
+        child: Text(_error!),
       );
     }
 
