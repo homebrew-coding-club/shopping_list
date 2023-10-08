@@ -34,6 +34,12 @@ class _GroceryListState extends State<GroceryList> {
         _error = 'Failed to fetch data, please try again later';
       });
     }
+    if(response.body == 'null') {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
     final Map<String, dynamic> listData = json.decode(response.body);
     final List<GroceryItem> loadedItems = [];
     for (final item in listData.entries) {
@@ -73,10 +79,23 @@ class _GroceryListState extends State<GroceryList> {
     _loadItems();
   }
 
-  void _removeItem(GroceryItem item) {
+  void _removeItem(GroceryItem item) async {
+    final index = _groceryItems.indexOf(item);
     setState(() {
       _groceryItems.remove(item);
     });
+
+    final url = Uri.https(
+        'fluter-prep-3c6a7-default-rtdb.firebaseio.com', 'shopping-list/${item.id}.json');
+    final response = await http.delete(url);
+
+    if(response.statusCode >= 400) {
+      setState(() {
+        _groceryItems.insert(index, item);
+      });
+    }
+
+
   }
 
   @override
