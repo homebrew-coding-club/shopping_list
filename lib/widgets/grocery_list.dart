@@ -27,7 +27,7 @@ class _GroceryListState extends State<GroceryList> {
 
   void _loadItems() async {
     final url = Uri.https(
-        'abc-3c6a7-default-rtdb.firebaseio.com', 'shopping-list.json');
+        'fluter-prep-3c6a7-default-rtdb.firebaseio.com', 'shopping-list.json');
     final response = await http.get(url);
     if(response.statusCode >= 400) {
       setState(() {
